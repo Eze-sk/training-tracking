@@ -50,10 +50,10 @@ function App() {
 
         if (currentDay?.status === 'completed') {
           finalStatus = "completed";
-        } else if (currentDay?.status === 'deactivated') {
-          finalStatus = "deactivated";
-        } else {
+        } else if (currentDay?.status === 'pending') {
           finalStatus = "activated";
+        } else {
+          finalStatus = "deactivated";
         }
 
         if (nextDay) {
@@ -67,7 +67,7 @@ function App() {
           setMessage(finalMessage);
           setMetadata(processedMetadata);
           setWeekDays(processedDays);
-          setTrainingLogs(processedTrainingLogs)
+          setTrainingLogs(processedTrainingLogs);
           setIsVerifying(false);
         }
       } catch (err) {
