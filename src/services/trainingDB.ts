@@ -4,6 +4,7 @@ import { format } from "date-fns";
 
 class UserTrainingService {
   private db: Database | null = null
+  private isProcessing = false;
 
   async getDB() {
     if (!this.db) {
@@ -13,6 +14,17 @@ class UserTrainingService {
     }
 
     return this.db
+  }
+
+  private async lock() {
+    while (this.isProcessing) {
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+    this.isProcessing = true;
+  }
+
+  private unlock() {
+    this.isProcessing = false;
   }
 
   async init() {
@@ -143,6 +155,7 @@ class UserTrainingService {
   }
 
   async resetAllData() {
+    await this.lock();
     const db = await this.getDB()
 
     try {
@@ -174,6 +187,8 @@ class UserTrainingService {
         console.error("Rollback failed", rollbackErr);
       }
       throw new Error(`Error <resetAllData>: ${err}`);
+    } finally {
+      this.unlock()
     }
   }
 
