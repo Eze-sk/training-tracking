@@ -1,6 +1,6 @@
 import "./App.css";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 
 import { useDb } from "./DatabaseContext";
@@ -10,6 +10,7 @@ import BtsCheck, { type StatusBts } from "./components/BtsCheck";
 import CalendarWeeks from "./components/CalendarWeeks";
 import LoadingAnimation from "./components/Loading";
 import { DAY } from "./consts/Date";
+import { eachDayOfInterval, format, getDay, isBefore, parseISO, setDay } from "date-fns";
 
 function App() {
   const { userData, isLoading: isDbLoading } = useDb()
@@ -20,6 +21,7 @@ function App() {
   const [isVerifying, setIsVerifying] = useState(true);
   const [trainingLogs, setTrainingLogs] = useState<TrainingLogs[]>([])
   const navigate = useNavigate()
+  const hasCheckStreak = useRef(false)
 
   useEffect(() => {
     if (isDbLoading || !userData) return
@@ -75,7 +77,52 @@ function App() {
       }
     }
 
+    const updateStreak = async () => {
+      const processedStartDate = (await userData.getMetadata()).routine_start_date
+      const startDate = parseISO(processedStartDate.toString())
+      const yesterday = setDay(new Date(), 1)
+
+      if (isBefore(yesterday, startDate)) return
+
+      const formatDate = "yyyy-MM-dd"
+
+      const existingLogsDates = new Set(
+        trainingLogs.map(log => format(parseISO(log.date_recorded), formatDate))
+      )
+
+      const routineDaysIndices = weekDays?.map(d => d.day)
+
+      const missingDays = eachDayOfInterval({ start: startDate, end: yesterday })
+        .filter(day => {
+          const dateStr = format(day, formatDate);
+          const dayOfWeek = getDay(day)
+
+          return routineDaysIndices?.includes(dayOfWeek) && !existingLogsDates.has(dateStr)
+        });
+
+      if (missingDays.length > 0) {
+        try {
+          const updatePromises = missingDays.map(d =>
+            userData.updateTrainingLogs({
+              status: "failed",
+              date: format(d, formatDate)
+            })
+          )
+
+          await Promise.all(updatePromises);
+        } catch (err) {
+          console.error(`Error updating streak: ${err}`)
+        }
+      }
+
+    }
+
     initializeApp()
+
+    if (!hasCheckStreak.current) {
+      updateStreak()
+      hasCheckStreak.current = true
+    }
 
     return () => { isMounted = false; };
   }, [isDbLoading, userData, navigate])

@@ -101,21 +101,27 @@ class UserTrainingService {
     }
   }
 
-  async updateTrainingLogs({ status }: { status: 'completed' | 'failed' | 'pending' }) {
+  async updateTrainingLogs({ status, date }: { status: 'completed' | 'failed' | 'pending', date?: string }) {
     try {
       const db = await this.getDB()
-      const today = format(new Date(), "yyyy-MM-dd")
+      let dateSave
+
+      if (date) {
+        dateSave = date
+      } else {
+        dateSave = format(new Date(), "yyyy-MM-dd")
+      }
 
       if (status === "pending") {
         await db.execute(
           "DELETE FROM training_logs WHERE user_id = 1 AND date_recorded = ?",
-          [today]
+          [dateSave]
         )
       } else {
         await db.execute(`
           INSERT OR REPLACE INTO training_logs (user_id, date_recorded, status)
           VALUES (?, ?, ?)
-        `, [1, today, status]);
+        `, [1, dateSave, status]);
       }
 
       return { success: true }
