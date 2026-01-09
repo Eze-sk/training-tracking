@@ -1,6 +1,6 @@
-export default function Spinner() {
+export default function Spinner(att?: React.ComponentPropsWithoutRef<'div'>) {
   return (
-    <div role="status">
+    <div role="status" {...att}>
       <svg
         aria-hidden="true"
         className="w-8 h-8 text-txt-primary animate-spin fill-acc-primary"
