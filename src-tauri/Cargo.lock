@@ -763,7 +763,7 @@ checksum = "bd0c93bb4b0c6d9b77f4435b0ae98c24d17f1c45b2ff844c6151a07256ca923b"
 
 [[package]]
 name = "dispatch2"
-version = "0.3.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "89a09f22a6c6069a18470eb92d2298acf25463f14256d24778e1230d789a2aec"
 dependencies = [
@@ -1904,7 +1904,7 @@ dependencies = [
 
 [[package]]
 name = "jni-sys"
-version = "0.3.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8eaf4bc02d17cbdd7ff4c7438cafcdf7fb9a4613313ad11b4f8fefe7d3fa0130"
 
@@ -4630,7 +4630,7 @@ dependencies = [
 
 [[package]]
 name = "training-track"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "serde",
  "serde_json",
@@ -4779,7 +4779,7 @@ dependencies = [
 
 [[package]]
 name = "urlpattern"
-version = "0.3.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "70acd30e3aa1450bc2eece896ce2ad0d178e9c079493819301573dae3c37ba6d"
 dependencies = [
