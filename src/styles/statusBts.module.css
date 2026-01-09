@@ -1,0 +1,19 @@
+.activated {
+  background-color: var(--color-layer-top);
+  color: var(--color-txt-primary);
+  cursor: pointer;
+}
+
+.activated:hover {
+  background-color: var(--color-acc-secondary);
+}
+
+.activated:active {
+  background-color: var(--color-acc-primary);
+}
+
+.deactivated {
+  background-color: var(--color-layer-mid);
+  color: var(--color-txt-secondary);
+  cursor: not-allowed;
+}
