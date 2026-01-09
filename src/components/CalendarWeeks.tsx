@@ -14,8 +14,8 @@ import CheckIcon from "../assets/Check";
 const STATUS_COLORS_DAY: Record<Status | "default", string> = {
   completed: "border-acc-primary text-acc-primary",
   failed: "border-red-400 text-red-400",
-  default: "text-txt-secondary",
-  pending: "border-txt-primary opacity-60"
+  default: "border-layer-mid border-layer-mid text-layer-mid",
+  pending: "text-txt-secondary border-background"
 }
 
 export interface Props {
@@ -117,9 +117,9 @@ export default function CalendarWeeks({ trainingLogs, startDate, weekdays }: Pro
         const isToday = isSameDay(currentDay, new Date());
         const isCurrentMonth = isSameMonth(currentDay, monthStart);
 
-        let statusClass = STATUS_COLORS_DAY.default
+        let statusClass
 
-        if (isRecurringDay(currentDay) && isCurrentMonth && !isToday) {
+        if (isRecurringDay(currentDay) && isCurrentMonth && !isToday && !mainStatus) {
           statusClass = STATUS_COLORS_DAY.pending
         } else if (mainStatus) {
           statusClass = STATUS_COLORS_DAY[mainStatus]
@@ -131,8 +131,8 @@ export default function CalendarWeeks({ trainingLogs, startDate, weekdays }: Pro
           <div
             className={`
               w-5 h-5 border rounded aspect-square p-7 relative flex items-center justify-center
-              ${statusClass}
-              ${!isCurrentMonth ? "bg-layer-mid text-layer-top" : ""}
+              ${!isToday && statusClass}
+              ${!isCurrentMonth ? "bg-layer-mid" : ""}
               ${isToday && !mainStatus ? "border-br-primary" : ""}
             `}
             key={day.toString()}
@@ -144,6 +144,7 @@ export default function CalendarWeeks({ trainingLogs, startDate, weekdays }: Pro
             <span className={`
               text-xs absolute bottom-1 right-1 font-bold
               ${isToday ? "text-txt-primary" : ""}
+              ${!isCurrentMonth ? "text-layer-top" : ""}
               `
             }>
               {formattedDate}
@@ -156,7 +157,7 @@ export default function CalendarWeeks({ trainingLogs, startDate, weekdays }: Pro
     }
 
     return <>{days}</>
-  }, [currentMonth, eventByDate])
+  }, [currentMonth, eventByDate, isRecurringDay])
 
   return (
     <section className="bg-layer-mid rounded-2xl border border-br-primary p-4">
