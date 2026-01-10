@@ -14,14 +14,17 @@ export default function DatabaseProvider({
 
   useEffect(() => {
     const init = async () => {
-      const instance = userTrainingService
-      await instance.init()
-      setService(instance)
-      setLoading(false)
-    }
-
-    init()
-  }, [])
+      const instance = userTrainingService;
+      try {
+        await instance.init();
+        setService(instance);
+        setLoading(false);
+      } catch (e) {
+        console.error("Falla en el inicio de DB", e);
+      }
+    };
+    init();
+  }, []);
 
   return (
     <DbContext.Provider value={{ userData: service, isLoading: loading }}>
