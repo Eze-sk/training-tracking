@@ -125,7 +125,7 @@ function App() {
     }
 
     return () => { isMounted = false; };
-  }, [isDbLoading, userData, navigate])
+  }, [isDbLoading, userData, navigate, trainingLogs, weekDays])
 
   const handleCheckDay = async () => {
     if (checkStatus === "deactivated" || !weekDays || !userData) return
