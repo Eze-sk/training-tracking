@@ -36,6 +36,8 @@ class UserTrainingService {
   }
 
   async init() {
+    await this.lock();
+
     try {
       const db = await this.getDB()
 
@@ -47,6 +49,8 @@ class UserTrainingService {
       return result
     } catch (err) {
       throw new Error(`Error <init>: ${err}`)
+    } finally {
+      this.unlock();
     }
   }
 
@@ -179,12 +183,15 @@ class UserTrainingService {
 
   async resetAllData() {
     await this.lock()
-    const db = await this.getDB()
+    let transactionStarted = false;
 
     try {
+      const db = await this.getDB()
       await db.execute('BEGIN TRANSACTION;')
       await db.execute('DELETE FROM target_days;')
       await db.execute('DELETE FROM training_logs;')
+
+      transactionStarted = true
 
       await db.execute(
         "DELETE FROM sqlite_sequence WHERE name IN ('target_days', 'training_logs');",
@@ -202,14 +209,14 @@ class UserTrainingService {
         message: 'All data has been successfully reset.',
       }
     } catch (err) {
-      const db = await this.getDB()
-
-      try {
-        await db.execute('ROLLBACK;')
-      } catch (rollbackErr) {
-        console.error('Rollback failed', rollbackErr)
+      if (transactionStarted) {
+        const db = await this.getDB();
+        try {
+          await db.execute('ROLLBACK;');
+        } catch (e) { console.error(e) }
       }
-      throw new Error(`Error <resetAllData>: ${err}`)
+
+      throw new Error(`Error <resetAllData>: ${err}`);
     } finally {
       this.unlock()
     }
