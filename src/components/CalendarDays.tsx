@@ -26,15 +26,14 @@ export function CalendarDays({
               const isToday = i === new Date().getDay()
 
               const textColor = (!currentDay || (currentDay && isToday))
-                ? "var(--color-txt-primary)"
-                : "var(--color-txt-secondary)";
+                ? "text-txt-primary"
+                : "text-layer-mid";
 
               return (
                 <th
                   key={d}
                   scope="col"
-                  className="text-center"
-                  style={{ color: textColor }}
+                  className={`text-center ${textColor}`}
                 >
                   {d}.
                 </th>
@@ -90,21 +89,21 @@ export interface PropsShow extends PropsChildren {
 export function CalendarDaysShow({ weekdays, index }: PropsShow) {
   const dayData = weekdays?.find((d) => d.day === index)
 
-  const style: Record<DayStatus, { brColor: string }> = {
-    pending: { brColor: "var(--color-br-primary)" },
-    completed: { brColor: "var(--color-acc-primary)" },
-    failed: { brColor: "#ff6467" },
-    notSelected: { brColor: "var(--color-txt-secondary)" },
+  const style: Record<DayStatus, string> = {
+    pending: "border-br-primary",
+    completed: "border-acc-primary",
+    failed: "border-red-400",
+    notSelected: "border-layer-mid",
   };
 
   const currentStatus: DayStatus = (dayData?.status as DayStatus) ?? "notSelected";
 
   return (
-    <div className="
+    <div className={`
       w-10 h-10 border rounded-full flex items-center 
       justify-center mx-auto relative bg-layer-top
-      "
-      style={{ borderColor: style[currentStatus].brColor }}
+      ${style[currentStatus]}
+      `}
     >
       {dayData && (
         <>
