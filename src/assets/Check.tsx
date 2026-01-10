@@ -1,4 +1,4 @@
-import { type PropsIcon } from "../types/PropsIcon";
+import { type PropsIcon } from '../types/PropsIcon'
 
 export default function CheckIcon({ height, width = 24, ...att }: PropsIcon) {
   return (

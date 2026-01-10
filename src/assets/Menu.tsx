@@ -1,4 +1,4 @@
-import { type PropsIcon } from "../types/PropsIcon";
+import { type PropsIcon } from '../types/PropsIcon'
 
 export default function MenuIcon({ width = 16, height, ...att }: PropsIcon) {
   return (
@@ -8,7 +8,7 @@ export default function MenuIcon({ width = 16, height, ...att }: PropsIcon) {
       height={height ? height : width}
       viewBox="0 0 16 16"
       strokeLinejoin="round"
-      style={{ color: "currentcolor" }}
+      style={{ color: 'currentcolor' }}
     >
       <path
         fill="currentColor"

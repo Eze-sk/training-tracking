@@ -1,8 +1,8 @@
-import AnimationCss from "../styles/loaderAnimation.module.css"
+import AnimationCss from '../styles/loaderAnimation.module.css'
 
 export default function LoadingAnimation() {
   return (
-    <div className="fixed inset-0 flex items-center justify-center flex-col gap-5">
+    <div className="fixed inset-0 flex flex-col items-center justify-center gap-5">
       <div className="flex items-center">
         <svg
           width="118.955"
@@ -18,7 +18,12 @@ export default function LoadingAnimation() {
             d="M11.48 170.262c24.96-1.33 39.37 1.09 77.13 7.75m-78.01-11.14c18.94 2.04 37.78 7.28 80.43 11.32m2.1-2.39c-7.42-13.89-7.41-22.06-4.11-41.78m1.33 45.57c-2.01-17.18-2.21-30.16.22-42.5m-.76 1.51c-11.21 1.41-13.28 1.86-22.47-.56m23.57 1.6c-8.66-3.88-14.54-2.5-20.55-.8m1.58-1.93c-4.82-24.66-3.97-47.06-3.38-70.13m.53 72.01c1.3-29.7 3.58-52.86 5.11-72.3m-1.47.24c11.13-4.78 20.12-5.18 36.23-9.19m-37.13 7.64c13.22-1.78 23.55-3.68 36.05-5.15m-.21-2.39c-3.43-6.15-.11-15.83-1.36-31.97m.23 35.75c.09-10.78 1.03-21.33-4.41-39.36m2.64.21c-24.6-3.12-52.82-3.69-63.63-12m62.97 11.95c-23.42-4.12-44.68-5.71-67.35-8.57m5.01-3.65c-3.59 16.2-7.38 19.69-15.64 37.56m12.85-33.31c-5.01 13.15-11.42 23.96-12.14 33.64m-3.28.43c12.25.63 14.79.66 29.56 5.43m-25.76-4.02c5.62-.52 13.11 4.08 25.15 5.29m.7 2.73c-1.37 26.8-2.47 51.44-5.98 71.13m1.82-73.4c.53 17.51-2.33 30.42-3.11 74.88m.1 1.22c-12.87-5.03-21.53-5.46-28.04-3.56m28.33.93c-8.59 1.52-18.06 1.09-29.06-1.2m3.56 3.43c-4.35 5.91-6.88 22.91-6.85 34.02m4.02-37.61c-.8 15.44-5.79 28.75-8 40.09"
           />
         </svg>
-        <svg width="131.487" height="187.367" viewBox="0 0 131.487 187.367" className={`-mt-15 ${AnimationCss.below}`}>
+        <svg
+          width="131.487"
+          height="187.367"
+          viewBox="0 0 131.487 187.367"
+          className={`-mt-15 ${AnimationCss.below}`}
+        >
           <path
             fill="none"
             stroke="#cbd3c5"
@@ -28,12 +33,12 @@ export default function LoadingAnimation() {
           />
         </svg>
       </div>
-      <div className="font-bold text-2xl flex gap-1 items-center">
+      <div className="flex items-center gap-1 text-2xl font-bold">
         <p>Loading</p>
         <span className={AnimationCss.startingPoint}>.</span>
         <span className={AnimationCss.midpoint}>.</span>
         <span className={AnimationCss.lastPoint}>.</span>
       </div>
     </div>
-  );
+  )
 }

@@ -1,6 +1,10 @@
-import { type PropsIcon } from "../types/PropsIcon";
+import { type PropsIcon } from '../types/PropsIcon'
 
-export default function ChevronRightIcon({ width = 16, height, ...att }: PropsIcon) {
+export default function ChevronRightIcon({
+  width = 16,
+  height,
+  ...att
+}: PropsIcon) {
   return (
     <svg
       {...att}
@@ -8,7 +12,7 @@ export default function ChevronRightIcon({ width = 16, height, ...att }: PropsIc
       height={height ? height : width}
       viewBox="0 0 16 16"
       strokeLinejoin="round"
-      style={{ color: "currentcolor" }}
+      style={{ color: 'currentcolor' }}
     >
       <path
         fill="currentColor"

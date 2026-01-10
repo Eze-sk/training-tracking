@@ -1,8 +1,11 @@
-import React, { useEffect, useRef, useState } from "react"
-import { useDb } from "../DatabaseContext"
-import { useNavigate } from "react-router"
-import Spinner from "../components/Spinner"
-import { CalendarDays, CalendarDaysInteractivity } from "../components/CalendarDays"
+import React, { useEffect, useRef, useState } from 'react'
+import { useDb } from '../context/DbContext'
+import { useNavigate } from 'react-router'
+import Spinner from '../components/Spinner'
+import {
+  CalendarDays,
+  CalendarDaysInteractivity,
+} from '../components/CalendarDays'
 
 export default function CreateRoutinePage() {
   const [selectedDay, setSelectedDay] = useState<number[]>([])
@@ -10,14 +13,14 @@ export default function CreateRoutinePage() {
   const [isResetting, setIsResetting] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const { userData } = useDb()
-  const hasInitialized = useRef(false);
+  const hasInitialized = useRef(false)
 
   const navigate = useNavigate()
 
   useEffect(() => {
     if (!userData || hasInitialized.current) return
 
-    hasInitialized.current = true;
+    hasInitialized.current = true
 
     const reset = async () => {
       try {
@@ -25,7 +28,7 @@ export default function CreateRoutinePage() {
         await userData.resetAllData()
       } catch (err) {
         console.error(`Error initializing data in component: ${err}`)
-        setError("Error cleaning up previous data.")
+        setError('Error cleaning up previous data.')
       } finally {
         setIsResetting(false)
       }
@@ -36,7 +39,7 @@ export default function CreateRoutinePage() {
 
   const toggleDay = (dayIndex: number) => {
     if (selectedDay.includes(dayIndex)) {
-      setSelectedDay(selectedDay.filter(d => d !== dayIndex))
+      setSelectedDay(selectedDay.filter((d) => d !== dayIndex))
     } else {
       setSelectedDay([...selectedDay, dayIndex])
     }
@@ -44,13 +47,15 @@ export default function CreateRoutinePage() {
     setError(null)
   }
 
-  const handleSubmitRoutine = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmitRoutine = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     e.preventDefault()
 
     if (isResetting) return
 
     if (selectedDay.length === 0) {
-      setError("You must select the days of the routine")
+      setError('You must select the days of the routine')
       return
     }
 
@@ -61,46 +66,50 @@ export default function CreateRoutinePage() {
         await userData.saveTargetDays({ days: selectedDay })
         await userData.updateRoutineStartDate()
 
-        navigate("/")
+        navigate('/')
       }
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : String(err);
-      setError(errorMessage);
+      const errorMessage = err instanceof Error ? err.message : String(err)
+      setError(errorMessage)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   }
 
   return (
-    <main className="flex items-center justify-center flex-col h-screen">
+    <main className="flex h-screen flex-col items-center justify-center">
       <h1 className="text-6xl font-bold">Days to train</h1>
-      <section className="bg-layer-mid p-5 rounded mt-30 border border-br-primary">
+      <section className="bg-layer-mid border-br-primary mt-30 rounded border p-5">
         <CalendarDays>
           {(i) => (
-            <CalendarDaysInteractivity index={i} event={toggleDay} selectedDay={selectedDay} />
+            <CalendarDaysInteractivity
+              index={i}
+              event={toggleDay}
+              selectedDay={selectedDay}
+            />
           )}
         </CalendarDays>
       </section>
       <button
         type="submit"
         disabled={isResetting || isLoading}
-        className={`
-          bg-layer-top border border-br-primary hover:bg-acc-secondary active:bg-acc-primary
-          text-xl font-semibold py-3 px-6 rounded mt-10 min-w-44 flex items-center 
-          justify-center
-          ${(isResetting || isLoading) ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
-          `}
+        className={`bg-layer-top border-br-primary hover:bg-acc-secondary active:bg-acc-primary mt-10 flex min-w-44 items-center justify-center rounded border px-6 py-3 text-xl font-semibold ${isResetting || isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'} `}
         onClick={handleSubmitRoutine}
       >
         {isResetting ? (
-          <> <Spinner className="mr-2" /> Cleaning up... </>
+          <>
+            {' '}
+            <Spinner className="mr-2" /> Cleaning up...{' '}
+          </>
         ) : isLoading ? (
           <Spinner />
         ) : (
-          "Start Routine"
+          'Start Routine'
         )}
       </button>
-      <span className="text-red-500 font-medium text-lg uppercase mt-5 pointer-events-none">{error}&#12644;</span>
+      <span className="pointer-events-none mt-5 text-lg font-medium text-red-500 uppercase">
+        {error}&#12644;
+      </span>
     </main>
   )
 }

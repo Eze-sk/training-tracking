@@ -1,14 +1,14 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
-import CreateRoutinePage from "./page/CreateRoutine";
-import { BrowserRouter, Route, Routes } from "react-router";
-import { DatabaseProvider } from "./DatabaseContext";
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App'
+import CreateRoutinePage from './page/CreateRoutine'
+import { BrowserRouter, Route, Routes } from 'react-router'
+import DatabaseProvider from './context/DatabaseProvider'
 
 // Supports weights 100-900
-import '@fontsource-variable/inter';
+import '@fontsource-variable/inter'
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>
       <DatabaseProvider>
@@ -19,4 +19,4 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       </DatabaseProvider>
     </BrowserRouter>
   </React.StrictMode>,
-);
+)
