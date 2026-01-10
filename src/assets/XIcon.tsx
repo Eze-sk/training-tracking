@@ -1,6 +1,6 @@
 import { type PropsIcon } from "../types/PropsIcon";
 
-export default function ({ height, width = 24, ...att }: PropsIcon) {
+export default function XIcon({ height, width = 24, ...att }: PropsIcon) {
   return (
     <svg
       {...att}
