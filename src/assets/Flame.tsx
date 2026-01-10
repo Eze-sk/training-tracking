@@ -9,7 +9,7 @@ export default function Flame({ height, width = 24, ...att }: PropsIcon) {
       fill="none"
       viewBox="0 0 24 24"
     >
-      <g stroke="#fff" strokeWidth="1.5">
+      <g stroke="currentColor" strokeWidth="1.5">
         <path
           d="M15.359 21.751C17.382 21.121 20 19.254 20 15c0-4.622-5.056-9.586-8.427-12.154-.557-.424-1.357-.119-1.617.53C8.31 7.496 4 11.855 4 15c0 3.107 2.246 5.309 4.081 6.372"
         />
