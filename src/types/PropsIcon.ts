@@ -1,4 +1,4 @@
 export interface PropsIcon extends React.HTMLAttributes<HTMLOrSVGElement> {
-  width?: number,
+  width?: number
   height?: number
 }

@@ -1,14 +1,16 @@
 .up {
-  animation: 
+  animation:
     floatUp 4s ease-in-out infinite alternate,
     randomRotate 7s ease-in-out infinite alternate;
 }
 
 .below {
-  animation: 
+  animation:
     floatDown 4s ease-in-out infinite alternate,
     randomRotate 7s ease-in-out infinite alternate;
-  animation-delay: -1.5s, -2s;
+  animation-delay:
+    -1.5s,
+    -2s;
 }
 
 .startingPoint {
@@ -26,20 +28,36 @@
 }
 
 @keyframes floatUp {
-  from { transform: translateY(0); }
-  to { transform: translateY(-30px); }
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-30px);
+  }
 }
 
 @keyframes floatDown {
-  from { transform: translateY(0); }
-  to { transform: translateY(30px); }
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(30px);
+  }
 }
 
 @keyframes randomRotate {
-  0% { rotate: 0deg; }
-  33% { rotate: -3deg; }
-  66% { rotate: 5deg; }
-  100% { rotate: -1deg; }
+  0% {
+    rotate: 0deg;
+  }
+  33% {
+    rotate: -3deg;
+  }
+  66% {
+    rotate: 5deg;
+  }
+  100% {
+    rotate: -1deg;
+  }
 }
 
 @keyframes floatingPoints {
