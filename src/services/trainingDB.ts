@@ -1,16 +1,24 @@
-import Database from "@tauri-apps/plugin-sql";
-import { TrainingDay, TrainingLogs, type UserMetadataType } from "../types/UserMetadata";
-import { format } from "date-fns";
+import Database from '@tauri-apps/plugin-sql'
+import {
+  TrainingDay,
+  TrainingLogs,
+  type UserMetadataType,
+} from '../types/UserMetadata'
+import { format } from 'date-fns'
+
+interface CountResult {
+  count: number
+}
 
 class UserTrainingService {
   private db: Database | null = null
-  private isProcessing = false;
+  private isProcessing = false
 
   async getDB() {
     if (!this.db) {
-      this.db = await Database.load("sqlite:training_database.db")
-      await this.db.execute("PRAGMA journal_mode = WAL;");
-      await this.db.execute("PRAGMA busy_timeout = 5000;");
+      this.db = await Database.load('sqlite:training_database.db')
+      await this.db.execute('PRAGMA journal_mode = WAL;')
+      await this.db.execute('PRAGMA busy_timeout = 5000;')
     }
 
     return this.db
@@ -18,13 +26,13 @@ class UserTrainingService {
 
   private async lock() {
     while (this.isProcessing) {
-      await new Promise(resolve => setTimeout(resolve, 50));
+      await new Promise((resolve) => setTimeout(resolve, 50))
     }
-    this.isProcessing = true;
+    this.isProcessing = true
   }
 
   private unlock() {
-    this.isProcessing = false;
+    this.isProcessing = false
   }
 
   async init() {
@@ -46,9 +54,11 @@ class UserTrainingService {
     try {
       const db = await this.getDB()
 
-      const result = await db.select("SELECT * FROM user_metadata WHERE id = 1") as UserMetadataType[];
+      const result = (await db.select(
+        'SELECT * FROM user_metadata WHERE id = 1',
+      )) as UserMetadataType[]
 
-      return result[0];
+      return result[0]
     } catch (err) {
       throw new Error(`Error <getMetadata>: ${err}`)
     }
@@ -58,9 +68,11 @@ class UserTrainingService {
     try {
       const db = await this.getDB()
 
-      const result = await db.select("SELECT COUNT(*) as count FROM target_days") as any[];
+      const result = await db.select<CountResult[]>(
+        'SELECT COUNT(*) as count FROM target_days',
+      )
 
-      return result[0].count > 0;
+      return (result[0]?.count ?? 0) > 0
     } catch (err) {
       throw new Error(`Error <hasConfiguredRoutine>: ${err}`)
     }
@@ -70,17 +82,17 @@ class UserTrainingService {
     try {
       const db = await this.getDB()
 
-      await db.execute("DELETE FROM target_days WHERE user_id = 1");
+      await db.execute('DELETE FROM target_days WHERE user_id = 1')
 
       for (const day of days) {
         await db.execute(
-          "INSERT INTO target_days (user_id, day_of_week) VALUES (?, ?)",
-          [1, day]
+          'INSERT INTO target_days (user_id, day_of_week) VALUES (?, ?)',
+          [1, day],
         )
       }
 
       return {
-        message: "Routine saved correctly",
+        message: 'Routine saved correctly',
       }
     } catch (err) {
       throw new Error(`Error <saveTargetDays>: ${err}`)
@@ -104,16 +116,22 @@ class UserTrainingService {
         GROUP BY td.day_of_week;
       `)
 
-      return result.map(row => ({
+      return result.map((row) => ({
         day: Number(row.day),
-        status: row.status
-      }));
+        status: row.status,
+      }))
     } catch (err) {
       throw new Error(`Error <getTrainingDay>: ${err}`)
     }
   }
 
-  async updateTrainingLogs({ status, date }: { status: 'completed' | 'failed' | 'pending', date?: string }) {
+  async updateTrainingLogs({
+    status,
+    date,
+  }: {
+    status: 'completed' | 'failed' | 'pending'
+    date?: string
+  }) {
     try {
       const db = await this.getDB()
       let dateSave
@@ -121,19 +139,22 @@ class UserTrainingService {
       if (date) {
         dateSave = date
       } else {
-        dateSave = format(new Date(), "yyyy-MM-dd")
+        dateSave = format(new Date(), 'yyyy-MM-dd')
       }
 
-      if (status === "pending") {
+      if (status === 'pending') {
         await db.execute(
-          "DELETE FROM training_logs WHERE user_id = 1 AND date_recorded = ?",
-          [dateSave]
+          'DELETE FROM training_logs WHERE user_id = 1 AND date_recorded = ?',
+          [dateSave],
         )
       } else {
-        await db.execute(`
+        await db.execute(
+          `
           INSERT OR REPLACE INTO training_logs (user_id, date_recorded, status)
           VALUES (?, ?, ?)
-        `, [1, dateSave, status]);
+        `,
+          [1, dateSave, status],
+        )
       }
 
       return { success: true }
@@ -146,7 +167,9 @@ class UserTrainingService {
     try {
       const db = await this.getDB()
 
-      const result = await db.select("SELECT * FROM training_logs") as TrainingLogs[]
+      const result = (await db.select(
+        'SELECT * FROM training_logs',
+      )) as TrainingLogs[]
 
       return result
     } catch (err) {
@@ -155,38 +178,38 @@ class UserTrainingService {
   }
 
   async resetAllData() {
-    await this.lock();
+    await this.lock()
     const db = await this.getDB()
 
     try {
-      await db.execute("BEGIN TRANSACTION;");
-      await db.execute("DELETE FROM target_days;");
-      await db.execute("DELETE FROM training_logs;");
+      await db.execute('BEGIN TRANSACTION;')
+      await db.execute('DELETE FROM target_days;')
+      await db.execute('DELETE FROM training_logs;')
 
       await db.execute(
-        "DELETE FROM sqlite_sequence WHERE name IN ('target_days', 'training_logs');"
-      );
+        "DELETE FROM sqlite_sequence WHERE name IN ('target_days', 'training_logs');",
+      )
 
       await db.execute(`
         INSERT OR REPLACE INTO user_metadata (id, max_streak, current_streak) 
         VALUES (1, 0, 0);
-      `);
+      `)
 
-      await db.execute("COMMIT;");
+      await db.execute('COMMIT;')
 
       return {
         success: true,
-        message: "All data has been successfully reset."
+        message: 'All data has been successfully reset.',
       }
     } catch (err) {
       const db = await this.getDB()
 
       try {
-        await db.execute("ROLLBACK;");
+        await db.execute('ROLLBACK;')
       } catch (rollbackErr) {
-        console.error("Rollback failed", rollbackErr);
+        console.error('Rollback failed', rollbackErr)
       }
-      throw new Error(`Error <resetAllData>: ${err}`);
+      throw new Error(`Error <resetAllData>: ${err}`)
     } finally {
       this.unlock()
     }
@@ -196,17 +219,20 @@ class UserTrainingService {
     try {
       const db = await this.getDB()
 
-      const today = format(new Date(), "yyyy-MM-dd")
+      const today = format(new Date(), 'yyyy-MM-dd')
 
-      await db.execute(`
+      await db.execute(
+        `
         UPDATE user_metadata 
         SET routine_start_date = ? 
         WHERE id = 1
-      `, [today]);
+      `,
+        [today],
+      )
 
       return { success: true }
     } catch (err) {
-      throw new Error(err instanceof Error ? err.message : "Unknown error");
+      throw new Error(err instanceof Error ? err.message : 'Unknown error')
     }
   }
 
@@ -214,19 +240,22 @@ class UserTrainingService {
     try {
       const db = await this.getDB()
 
-      await db.execute(`
+      await db.execute(
+        `
         UPDATE user_metadata 
         SET current_streak = MAX(0, current_streak + ?)
         WHERE id = 1
-      `, [delta]);
+      `,
+        [delta],
+      )
 
       await db.execute(`
         UPDATE user_metadata 
         SET max_streak = current_streak
         WHERE id = 1 AND current_streak > max_streak
-      `);
+      `)
 
-      return { success: true };
+      return { success: true }
     } catch (err) {
       throw new Error(`Error <resetAllData>: ${err}`)
     }

@@ -3,7 +3,7 @@ import "./App.css";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 
-import { useDb } from "./DatabaseContext";
+import { useDb } from "./context/DbContext";
 import Header from "./components/header/Header";
 import { TrainingDay, TrainingLogs, UserMetadataType } from "./types/UserMetadata";
 import BtsCheck, { type StatusBts } from "./components/BtsCheck";
